@@ -16,6 +16,11 @@ morgan.token("person", (request, response) => {
 
 let persons = [
   {
+    id: 4,
+    name: "Mary Poppendieck",
+    number: "39-23-6423122",
+  },
+  {
     id: 1,
     name: "Arto Hellas",
     number: "040-123456",
@@ -29,11 +34,6 @@ let persons = [
     id: 3,
     name: "Dan Abramov",
     number: "12-43-234345",
-  },
-  {
-    id: 4,
-    name: "Mary Poppendieck",
-    number: "39-23-6423122",
   },
 ];
 
@@ -51,6 +51,7 @@ app.get("/info", (request, response) => {
     <p> ${new Date().toString()} </p>`
   );
 });
+
 app.get("/api/persons/:id", (request, response) => {
   const id = Number(request.params.id);
   const person = persons.find((person) => person.id === id);
@@ -63,25 +64,26 @@ app.delete("/api/persons/:id", (request, response) => {
   response.status(204).end();
 });
 
-const generateId = () => {
-  const randomNumber =
-    persons.length > 0 ? Math.max(...persons.map((number) => number.id)) : 0;
-  return randomNumber + 1;
-};
+// const generateId = () => {
+//   const randomNumber =
+//     persons.length > 0 ? Math.max(...persons.map((number) => number.id)) : 0;
+//   return randomNumber + 1;
+// };
 
 app.post("/api/persons", (request, response) => {
+  const ids = persons.map((person) => person.id);
+  const maxId = Math.max(...ids);
   const person = request.body;
-
   if (person.name === undefined || person.number === undefined) {
     return response.status(400).json({ error: "name or number missing" });
   }
-
   const newPerson = {
     name: person.name,
     number: person.number,
-    id: generateId(),
+    id: maxId + 1,
   };
-  persons.concat(newPerson);
+
+  persons = persons.concat(newPerson);
   response.json(newPerson);
 });
 
