@@ -37,6 +37,14 @@ let persons = [
   },
 ];
 
+app.get("/", (request, response) => {
+  response.send("<h1>Hello World!</h1>");
+});
+
+app.get("/api/persons", (request, response) => {
+  response.json(persons);
+});
+
 app.get("/info", (request, response) => {
   response.send(
     `<p>Phonebook has info over  ${persons.length}  people </p>
@@ -53,10 +61,6 @@ app.delete("/api/persons/:id", (request, response) => {
   const id = Number(request.params.id);
   persons = persons.filter((person) => person.id !== id);
   response.status(204).end();
-});
-
-app.get("/api/persons", (request, response) => {
-  persons.find({}).then((result) => response.json(result));
 });
 
 const generateId = () => {
