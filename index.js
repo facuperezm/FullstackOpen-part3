@@ -10,6 +10,9 @@ app.use(
     ":method :url :status :res[content-length] - :response-time ms - :person"
   )
 );
+morgan.token("person", (request, response) => {
+  return JSON.stringify(request.body);
+});
 
 let persons = [
   {
@@ -52,6 +55,10 @@ app.delete("/api/persons/:id", (request, response) => {
   response.status(204).end();
 });
 
+app.get("/api/persons", (request, response) => {
+  persons.find({}).then((result) => response.json(result));
+});
+
 const generateId = () => {
   const randomNumber =
     persons.length > 0 ? Math.max(...persons.map((number) => number.id)) : 0;
@@ -72,10 +79,6 @@ app.post("/api/persons", (request, response) => {
   };
   persons.concat(newPerson);
   response.json(newPerson);
-});
-
-morgan.token("person", (request, response) => {
-  return JSON.stringify(request.body);
 });
 
 const PORT = process.env.PORT || 3001;
