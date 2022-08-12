@@ -12,8 +12,23 @@ mongoose
   });
 
 const personSchema = new mongoose.Schema({
-  name: String,
-  number: String,
+  name: {
+    type: String,
+    unique: true,
+    minlength: 3,
+    validate: {
+      validator: function (v) {
+        return /^\d{2,3}-\d{1,}$/.test(v);
+      },
+      message: "not a valid phone number!",
+    },
+    required: true,
+  },
+  number: {
+    type: String,
+    required: true,
+    minlength: 8,
+  },
 });
 const Person = mongoose.model("Person", personSchema);
 
